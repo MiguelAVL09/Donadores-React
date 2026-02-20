@@ -23,7 +23,7 @@ import DoctorDashboard from './pages/DoctorDashboard';
 
 function App() {
   return (
-    <Router>
+    <Router basename={import.meta.env.BASE_URL}>
       <Routes>
         {/* Rutas Públicas y de Flujo Inicial */}
         <Route path="/" element={<Login />} />
