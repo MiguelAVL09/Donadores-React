@@ -22,13 +22,11 @@ function App() {
   return (
     <Router basename={import.meta.env.BASE_URL}>
       <Routes>
-        {/* Rutas Públicas y de Flujo Inicial */}
         <Route path="/" element={<Login />} />
         <Route path="/registro" element={<Registro />} />
         <Route path="/aviso" element={<Aviso />} />
         <Route path="/cuestionario" element={<Cuestionario />} />
 
-        {/* Rutas Privadas del Donador (comparten el Layout/Sidebar) */}
         <Route element={<Layout />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/perfil" element={<Perfil />} />
@@ -40,7 +38,6 @@ function App() {
           <Route path="/historial" element={<HistorialDonaciones />} />
         </Route>
 
-        {/* Dashboards de otros Roles (Tienen su propio Layout interno) */}
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
         <Route path="/doctor-dashboard" element={<DoctorDashboard />} />
       </Routes>

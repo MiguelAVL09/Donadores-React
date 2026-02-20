@@ -1,11 +1,8 @@
 import { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
-import 'leaflet/dist/leaflet.css'; // Importante repetirlo aquí por seguridad
+import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 
-// --- CONFIGURACIÓN DE ÍCONOS ---
-
-// Fix para íconos rotos por defecto en Leaflet + React
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
     iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
@@ -13,7 +10,6 @@ L.Icon.Default.mergeOptions({
     shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
 });
 
-// Ícono Personalizado Hospital
 const hospitalIcon = new L.DivIcon({
     className: 'custom-icon',
     html: `<div style="background-color: #ffffff; width: 30px; height: 30px; border-radius: 50%; border: 2px solid #b71c1c; display: flex; align-items: center; justify-content: center; font-size: 16px; box-shadow: 0 2px 5px rgba(0,0,0,0.3);">🏥</div>`,
@@ -22,7 +18,6 @@ const hospitalIcon = new L.DivIcon({
     popupAnchor: [0, -30]
 });
 
-// Ícono Mi Ubicación
 const myLocationIcon = new L.DivIcon({
     className: 'my-location-icon',
     html: `<div style="background-color: #0d6efd; width: 16px; height: 16px; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.4);"></div>`,
@@ -30,7 +25,6 @@ const myLocationIcon = new L.DivIcon({
     iconAnchor: [10, 10]
 });
 
-// --- DATOS DE HOSPITALES ---
 const HOSPITALES_MEXICO = [
     { id: 101, nombre: "Hospital General Regional No. 6 IMSS", lat: 22.2394, lng: -97.8601, ciudad: "Cd. Madero", estado: "TAM" },
     { id: 102, nombre: "Hospital Civil de Madero", lat: 22.2475, lng: -97.8373, ciudad: "Cd. Madero", estado: "TAM" },
@@ -41,8 +35,6 @@ const HOSPITALES_MEXICO = [
     { id: 301, nombre: "Hospital Civil de Guadalajara", lat: 20.6864, lng: -103.3516, ciudad: "Guadalajara", estado: "JAL" },
     { id: 502, nombre: "Hospital General de Cancún", lat: 21.1683, lng: -86.8433, ciudad: "Cancún", estado: "QROO" }
 ];
-
-// --- COMPONENTES AUXILIARES ---
 
 function LocationButton() {
     const map = useMap();
@@ -102,8 +94,6 @@ function UserMarker() {
     ) : null;
 }
 
-// --- COMPONENTE PRINCIPAL ---
-
 export default function Mapa() {
     // Centro de México
     const centroMexico = [23.6345, -102.5528];
@@ -115,9 +105,7 @@ export default function Mapa() {
                 Explora los centros de donación. Usa el botón <span className="fs-5">🎯</span> para encontrarte.
             </p>
 
-            {/* IMPORTANTE: El contenedor debe tener altura explícita */}
             <div className="card shadow-sm border-0 p-1 flex-grow-1" style={{ height: '600px', width: '100%', borderRadius: '15px', position: 'relative', overflow: 'hidden' }}>
-
                 <MapContainer center={centroMexico} zoom={5} style={{ height: '100%', width: '100%' }}>
 
                     <TileLayer

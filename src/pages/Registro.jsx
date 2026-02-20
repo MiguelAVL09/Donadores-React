@@ -16,7 +16,6 @@ export default function Registro() {
         if (formData.pass !== formData.confirm) return alert("Las contraseñas no coinciden.");
         setLoading(true);
 
-        // Verificar si existe
         const { data } = await DB.supabase.from('users').select('*').eq('curp', formData.curp).single();
         if (data) {
             setLoading(false);
@@ -29,8 +28,8 @@ export default function Registro() {
             correo: formData.correo,
             telefono: formData.telefono,
             sangre: formData.sangre,
-            password: formData.pass, // En producción deberías encriptar esto
-            rol: 'donador', // Rol por defecto
+            password: formData.pass,
+            rol: 'donador',
             aceptoAviso: false,
             cuestionario: false,
             puntos: 0,

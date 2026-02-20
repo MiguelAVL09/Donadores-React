@@ -11,7 +11,6 @@ export default function HistorialDonaciones() {
         <div>
             <h2 className="fw-bold text-danger mb-4">Mi Historial</h2>
 
-            {/* SECCIÓN 1: CITA ACTIVA */}
             <h4 className="mb-3">Compromisos Pendientes</h4>
             {user.citaActiva ? (
                 <div className="card shadow-sm border-start border-5 border-info mb-5">
@@ -31,7 +30,6 @@ export default function HistorialDonaciones() {
                 <div className="alert alert-light text-center border mb-5">No tienes donaciones pendientes.</div>
             )}
 
-            {/* SECCIÓN 2: HISTORIAL */}
             <h4 className="mb-3">Logros Desbloqueados</h4>
             <div className="list-group">
                 {user.ultimaDonacion ? (

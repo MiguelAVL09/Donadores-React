@@ -9,13 +9,12 @@ export default function ListaSolicitudes() {
 
     useEffect(() => {
         const cargar = async () => {
-            // USAMOS LA TABLA CORRECTA 'solicitudes'
             const { data } = await DB.supabase
                 .from('solicitudes')
                 .select('*')
                 .eq('estatus', 'activa')
                 .gt('unidades_necesarias', 0)
-                .neq('creado_por_curp', user.curp) // No mostrar mis propias solicitudes
+                .neq('creado_por_curp', user.curp)
                 .order('created_at', { ascending: false });
 
             setSolicitudes(data || []);
@@ -27,10 +26,6 @@ export default function ListaSolicitudes() {
         if (user.citaActiva) return alert("Ya tienes una cita activa.");
 
         if (window.confirm(`¿Quieres donar para ${req.paciente} en ${req.hospital}?`)) {
-            // En web no tenemos "ChatBot" complejo, hacemos asignación directa o redirigimos a una pantalla de confirmación.
-            // Aquí simularemos la asignación directa por simplicidad web:
-
-            // 1. Crear objeto cita
             const nuevaCita = {
                 hospital: req.hospital,
                 fecha: new Date().toISOString(),
@@ -38,12 +33,10 @@ export default function ListaSolicitudes() {
                 solicitudId: req.id
             };
 
-            // 2. Actualizar usuario
             const updatedUser = { ...user, citaActiva: nuevaCita };
             await DB.updateUser(updatedUser);
             sessionStorage.setItem('currentUser', JSON.stringify(updatedUser));
 
-            // 3. Descontar unidad en BD
             const nuevasUnidades = req.unidades_necesarias - 1;
             const nuevoEstatus = nuevasUnidades <= 0 ? 'completada' : 'activa';
 

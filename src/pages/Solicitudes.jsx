@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { DB } from '../core/supabase';
 
-// Datos fijos (Misma lista que en la App)
 const HOSPITALES_POR_CIUDAD = {
     "Ciudad Madero": ["Hospital General Regional No. 6 (IMSS)", "Hospital Civil de Madero", "Clínica de Pemex Madero"],
     "Tampico": ["Hospital General Dr. Carlos Canseco", "Hospital Beneficencia Española", "Hospital Cemain", "ISSSTE Tampico"],
@@ -25,7 +24,7 @@ export default function Solicitudes() {
     const handleCiudadChange = (e) => {
         const nuevaCiudad = e.target.value;
         setCiudad(nuevaCiudad);
-        setHospital(HOSPITALES_POR_CIUDAD[nuevaCiudad][0]); // Resetear hospital al primero de la lista
+        setHospital(HOSPITALES_POR_CIUDAD[nuevaCiudad][0]);
     };
 
     const handleSolicitar = async (e) => {
@@ -66,13 +65,11 @@ export default function Solicitudes() {
 
                 <form onSubmit={handleSolicitar}>
                     <div className="row g-3">
-                        {/* Nombre del Paciente */}
                         <div className="col-md-12">
                             <label className="form-label fw-bold">Nombre del Paciente</label>
                             <input type="text" className="form-control" placeholder="Ej. Juan Pérez" value={paciente} onChange={e => setPaciente(e.target.value)} required />
                         </div>
 
-                        {/* Ciudad */}
                         <div className="col-md-6">
                             <label className="form-label fw-bold">Ciudad</label>
                             <select className="form-select" value={ciudad} onChange={handleCiudadChange}>
@@ -80,7 +77,6 @@ export default function Solicitudes() {
                             </select>
                         </div>
 
-                        {/* Hospital (Dinámico) */}
                         <div className="col-md-6">
                             <label className="form-label fw-bold">Hospital</label>
                             <select className="form-select" value={hospital} onChange={e => setHospital(e.target.value)}>
@@ -88,7 +84,6 @@ export default function Solicitudes() {
                             </select>
                         </div>
 
-                        {/* Tipo de Sangre */}
                         <div className="col-md-6">
                             <label className="form-label fw-bold">Tipo de Sangre</label>
                             <select className="form-select" value={tipoSangre} onChange={e => setTipoSangre(e.target.value)}>
@@ -96,13 +91,11 @@ export default function Solicitudes() {
                             </select>
                         </div>
 
-                        {/* Unidades */}
                         <div className="col-md-6">
                             <label className="form-label fw-bold">Unidades Requeridas</label>
                             <input type="number" className="form-control" min="1" max="10" value={unidades} onChange={e => setUnidades(e.target.value)} required />
                         </div>
 
-                        {/* Historia */}
                         <div className="col-12">
                             <label className="form-label fw-bold">Breve Historia (Opcional)</label>
                             <textarea className="form-control" rows="2" placeholder="Ej. Cirugía programada..." value={historia} onChange={e => setHistoria(e.target.value)}></textarea>

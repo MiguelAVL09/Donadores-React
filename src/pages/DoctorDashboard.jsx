@@ -46,13 +46,13 @@ export default function DoctorDashboard() {
 
             const updatedPaciente = {
                 ...paciente,
-                puntos: (paciente.puntos || 0) + 100, // Gamificación
-                cuestionario: false, // Resetear cuestionario
+                puntos: (paciente.puntos || 0) + 100,
+                cuestionario: false,
                 ultimaDonacion: new Date().toISOString(),
-                citaActiva: null // Borrar cita
+                citaActiva: null
             };
 
-            await DB.updateUser(updatedPaciente); // Usando tu helper existente
+            await DB.updateUser(updatedPaciente);
             alert("✅ Donación registrada con éxito.");
             cargarPacientes();
 

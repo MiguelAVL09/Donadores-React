@@ -11,7 +11,6 @@ export default function MisNotificaciones() {
         const cargarAlertas = async () => {
             let misAlertas = [];
 
-            // 1. Alerta Local: Recuperación
             if (user.ultimaDonacion) {
                 const fechaUltima = new Date(user.ultimaDonacion);
                 const hoy = new Date();
@@ -19,7 +18,6 @@ export default function MisNotificaciones() {
                 const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
                 const mesesRequeridos = user.genero === 'Mujer' ? 4 : 3;
 
-                // Si pasaron 90 o 120 días
                 if (diffDays >= mesesRequeridos * 30 && !user.citaActiva) {
                     misAlertas.push({
                         id: 'local-recovery',
@@ -31,7 +29,6 @@ export default function MisNotificaciones() {
                 }
             }
 
-            // 2. Alerta Local: Cita Activa
             if (user.citaActiva) {
                 misAlertas.push({
                     id: 'local-cita',
@@ -42,7 +39,6 @@ export default function MisNotificaciones() {
                 });
             }
 
-            // 3. Alertas de BD (Doctores)
             const { data } = await DB.supabase
                 .from('notificaciones_medicas')
                 .select('*')

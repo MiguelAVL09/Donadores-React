@@ -8,7 +8,6 @@ export default function SubadminDashboard() {
     const navigate = useNavigate();
 
     const fetchDoctores = async () => {
-        // Solo traemos a los que tienen rol 'doctor'
         const { data } = await DB.supabase.from('users').select('*').eq('rol', 'doctor');
         setDoctores(data || []);
     };
@@ -20,13 +19,12 @@ export default function SubadminDashboard() {
         navigate('/');
     };
 
-    // ALTA DE DOCTOR (Crear usuario directo con rol doctor)
     const crearDoctor = async (e) => {
         e.preventDefault();
         const { error } = await DB.supabase.from('users').insert([{
             nombre: nuevoDoc.nombre,
             curp: nuevoDoc.curp,
-            password: nuevoDoc.password, // En producción usar hash
+            password: nuevoDoc.password,
             rol: 'doctor',
             sangre: 'N/A'
         }]);
@@ -40,7 +38,6 @@ export default function SubadminDashboard() {
         }
     };
 
-    // BAJA DE DOCTOR
     const eliminarDoctor = async (curp) => {
         if (window.confirm("¿Dar de baja a este doctor permanentemente?")) {
             const { error } = await DB.supabase.from('users').delete().eq('curp', curp);
@@ -62,7 +59,6 @@ export default function SubadminDashboard() {
             <div className="p-5 w-100 bg-light">
                 <h2 className="mb-4">Gestión de Doctores</h2>
 
-                {/* FORMULARIO DE ALTA */}
                 <div className="card shadow-sm p-4 mb-4">
                     <h5>👨‍⚕️ Dar de Alta Nuevo Doctor</h5>
                     <form onSubmit={crearDoctor} className="row g-3">
@@ -81,7 +77,6 @@ export default function SubadminDashboard() {
                     </form>
                 </div>
 
-                {/* TABLA DE DOCTORES */}
                 <div className="card shadow-sm p-4">
                     <table className="table table-hover">
                         <thead className="table-secondary">

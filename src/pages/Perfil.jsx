@@ -4,14 +4,12 @@ import { DB } from '../core/supabase';
 export default function Perfil() {
     const [user, setUser] = useState({});
     const [uploading, setUploading] = useState(false);
-    // Estado extra para forzar refresco de imagen visualmente
     const [imgKey, setImgKey] = useState(Date.now());
 
     useEffect(() => {
         const cargarUser = async () => {
             const localUser = JSON.parse(localStorage.getItem('currentUser'));
             if (localUser) {
-                // Pedimos datos frescos a Supabase para asegurar que tenemos la foto real
                 const { data } = await DB.supabase
                     .from('users')
                     .select('*')
@@ -20,7 +18,6 @@ export default function Perfil() {
 
                 if (data) {
                     setUser(data);
-                    // Actualizamos localStorage para que el Header también se entere
                     localStorage.setItem('currentUser', JSON.stringify(data));
                 }
             }
@@ -34,27 +31,22 @@ export default function Perfil() {
             const file = event.target.files[0];
             if (!file) return;
 
-            // Nombre único para el archivo
             const fileExt = file.name.split('.').pop();
-            const fileName = `${user.curp}.${fileExt}`; // Usamos CURP fijo para reemplazar la anterior
+            const fileName = `${user.curp}.${fileExt}`;
             const filePath = `${fileName}`;
 
-            // 1. Subir (upsert: true reemplaza si ya existe)
             const { error: uploadError } = await DB.supabase.storage
                 .from('avatars')
                 .upload(filePath, file, { upsert: true });
 
             if (uploadError) throw uploadError;
 
-            // 2. Obtener URL Pública
             const { data } = DB.supabase.storage
                 .from('avatars')
                 .getPublicUrl(filePath);
 
-            // Truco: Agregamos ?t=tiempo para que el navegador no use la caché vieja
             const publicUrl = `${data.publicUrl}?t=${Date.now()}`;
 
-            // 3. Actualizar Usuario en BD
             const { error: updateError } = await DB.supabase
                 .from('users')
                 .update({ avatar_url: publicUrl })
@@ -62,14 +54,12 @@ export default function Perfil() {
 
             if (updateError) throw updateError;
 
-            // 4. Actualizar estado local y navegador
             const updatedUser = { ...user, avatar_url: publicUrl };
             setUser(updatedUser);
             localStorage.setItem('currentUser', JSON.stringify(updatedUser));
-            setImgKey(Date.now()); // Forzar re-render de la imagen
+            setImgKey(Date.now());
 
             alert("¡Foto actualizada con éxito!");
-            // Opcional: Recargar página para actualizar el Header
             window.location.reload();
 
         } catch (error) {
@@ -80,7 +70,6 @@ export default function Perfil() {
         }
     };
 
-    // Usamos 'puntos' en minúscula (asegúrate de cambiarlo en Supabase)
     const puntos = user.puntos || 0;
 
     return (
@@ -90,7 +79,7 @@ export default function Perfil() {
                     <div className="card border-0 shadow-sm text-center p-4">
                         <div className="position-relative mx-auto mb-3" style={{ width: '150px', height: '150px' }}>
                             <img
-                                key={imgKey} // Clave para forzar actualización
+                                key={imgKey}
                                 src={user.avatar_url || "https://placehold.co/150x150?text=Sin+Foto"}
                                 className="rounded-circle w-100 h-100 object-fit-cover border border-4 border-white shadow"
                                 alt="Avatar"

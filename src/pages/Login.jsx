@@ -3,26 +3,23 @@ import { useNavigate, Link } from 'react-router-dom';
 import { DB } from '../core/supabase';
 
 export default function Login() {
-    // Estado para "Recordar usuario"
     const [usuarioRecordado, setUsuarioRecordado] = useState(null);
 
-    // Estados del formulario
     const [curp, setCurp] = useState('');
     const [pass, setPass] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
-    // 1. Al cargar, buscamos en LOCALSTORAGE (Persistencia Real)
     useEffect(() => {
         const savedData = localStorage.getItem('currentUser');
         if (savedData) {
             try {
                 const user = JSON.parse(savedData);
                 setUsuarioRecordado(user);
-                setCurp(user.curp); // Pre-cargamos el CURP
+                setCurp(user.curp);
             } catch (e) {
-                localStorage.removeItem('currentUser'); // Si falla, limpiamos
+                localStorage.removeItem('currentUser');
             }
         }
     }, []);
@@ -43,11 +40,9 @@ export default function Login() {
         setError('');
 
         try {
-            // Verificamos credenciales en BD
             const user = await DB.findUser(curp, pass);
 
             if (user) {
-                // CAMBIO CLAVE: Usamos localStorage
                 localStorage.setItem('currentUser', JSON.stringify(user));
                 redirigirPorRol(user);
             } else {
@@ -72,7 +67,6 @@ export default function Login() {
             <div className="card-custom text-center p-5 shadow-sm bg-white rounded" style={{ width: '400px' }}>
 
                 {usuarioRecordado ? (
-                    // --- VISTA "FACEBOOK" (Usuario Recordado) ---
                     <div className="fade-in">
                         <div className="mb-4 position-relative d-inline-block">
                             <img
@@ -82,7 +76,6 @@ export default function Login() {
                                 style={{ width: '100px', height: '100px', objectFit: 'cover' }}
                                 onError={(e) => e.target.src = "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
                             />
-                            {/* Botoncito para quitar cuenta */}
                             <button
                                 onClick={olvidarCuenta}
                                 className="btn btn-sm btn-dark position-absolute top-0 end-0 rounded-circle"
@@ -117,7 +110,6 @@ export default function Login() {
                         </div>
                     </div>
                 ) : (
-                    // --- VISTA CLÁSICA (Login Nuevo) ---
                     <div className="fade-in">
                         <div className="mb-4"><span className="fs-1">🩸</span></div>
                         <h2 className="mb-4 text-danger fw-bold">Iniciar Sesión</h2>
