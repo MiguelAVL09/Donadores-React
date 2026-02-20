@@ -1,0 +1,17 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Dependencias (¡El causante del problema!)
+node_modules/
+
+# Producción
+dist-ssr
+*.local
+
+# Editor de código
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
