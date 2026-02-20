@@ -8,7 +8,6 @@ export default function AdminDashboard() {
 
     const fetchUsers = async () => {
         const users = await DB.getAllUsers();
-        // Ordenar: Admin > Subadmin > Doctor > Donador
         const rolesOrder = { 'admin': 1, 'subadmin': 2, 'doctor': 3, 'donador': 4 };
         users.sort((a, b) => (rolesOrder[a.rol] || 4) - (rolesOrder[b.rol] || 4));
         setUsuarios(users);
@@ -21,7 +20,6 @@ export default function AdminDashboard() {
         navigate('/');
     };
 
-    // CAMBIAR ROL (Admin puede crear Subadmins y Doctores)
     const cambiarRol = async (usuario, nuevoRol) => {
         if (usuario.rol === 'admin') return alert("No puedes modificar al Admin principal.");
         if (window.confirm(`¿Cambiar a ${usuario.nombre} al rol de ${nuevoRol}?`)) {
@@ -33,7 +31,6 @@ export default function AdminDashboard() {
         }
     };
 
-    // ELIMINAR USUARIO (Cualquiera)
     const eliminarUsuario = async (curp) => {
         if (window.confirm("⚠️ ¿ESTÁS SEGURO? Esta acción borrará al usuario permanentemente.")) {
             const { error } = await DB.supabase.from('users').delete().eq('curp', curp);

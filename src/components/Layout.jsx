@@ -6,20 +6,17 @@ export default function Layout() {
     const navigate = useNavigate();
     const [menuOpen, setMenuOpen] = useState(false);
     const [noLeidas, setNoLeidas] = useState(0);
-    // CAMBIO 1: Leer de localStorage para persistencia
     const [user, setUser] = useState(() => {
         const savedUser = localStorage.getItem('currentUser');
         return savedUser ? JSON.parse(savedUser) : {};
     });
 
     useEffect(() => {
-        // Si no hay usuario, redirigir al login (protección básica)
         if (!user.curp) {
             navigate('/');
             return;
         }
 
-        // 1. Función para contar notificaciones pendientes
         const contarNotificaciones = async () => {
             const { count } = await supabase
                 .from('notificaciones_medicas')
@@ -29,7 +26,7 @@ export default function Layout() {
             setNoLeidas(count || 0);
         };
 
-        // 2. Función para refrescar datos del usuario
+
         const refrescarPerfil = async () => {
             const { data } = await supabase
                 .from('users')
@@ -38,10 +35,8 @@ export default function Layout() {
                 .single();
             if (data) {
                 const updated = { ...user, ...data };
-                // Solo actualizamos si hay cambios reales para evitar renders infinitos
                 if (JSON.stringify(updated) !== JSON.stringify(user)) {
                     setUser(updated);
-                    // CAMBIO 2: Guardar en localStorage
                     localStorage.setItem('currentUser', JSON.stringify(updated));
                 }
             }
@@ -50,7 +45,6 @@ export default function Layout() {
         contarNotificaciones();
         refrescarPerfil();
 
-        // Suscripción a cambios en notificaciones
         const suscripcion = supabase.channel('notis-layout')
             .on('postgres_changes',
                 { event: '*', schema: 'public', table: 'notificaciones_medicas', filter: `curpUsuario=eq.${user.curp}` },
@@ -61,10 +55,9 @@ export default function Layout() {
         return () => {
             supabase.removeChannel(suscripcion);
         };
-    }, [user.curp]); // Dependencia clave: solo se ejecuta si cambia el usuario o al inicio
+    }, [user.curp]);
 
     const handleLogout = () => {
-        // CAMBIO 3: Limpiar localStorage
         localStorage.removeItem('currentUser');
         navigate('/');
     };
@@ -72,7 +65,6 @@ export default function Layout() {
     const navLinkClass = ({ isActive }) =>
         `nav-link px-3 text-white ${isActive ? 'fw-bold border-bottom border-2 border-white pb-1' : 'opacity-75'}`;
 
-    // Si no hay usuario cargado (y estamos redirigiendo), no renderizar nada o un loader
     if (!user.curp) return null;
 
     return (
@@ -94,8 +86,6 @@ export default function Layout() {
                             <li className="nav-item mx-1"><NavLink className={navLinkClass} to="/ListaSolicitudes">Solicitudes</NavLink></li>
                             <li className="nav-item mx-1"><NavLink className={navLinkClass} to="/Solicitudes">Pedir Sangre</NavLink></li>
                             <li className="nav-item mx-1"><NavLink className={navLinkClass} to="/mapa">Mapa de Héroes</NavLink></li>
-
-                            {/* Dropdown de Usuario con Foto Dinámica */}
                             <li className="nav-item ms-lg-4 position-relative">
                                 <button
                                     onClick={() => setMenuOpen(!menuOpen)}
@@ -112,7 +102,6 @@ export default function Layout() {
                                         <span style={{ fontSize: '20px' }}>🧍</span>
                                     )}
 
-                                    {/* Badge de Notificaciones */}
                                     {noLeidas > 0 && (
                                         <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger shadow" style={{ fontSize: '0.6em', border: '2px solid white', zIndex: 1 }}>
                                             {noLeidas}
@@ -123,7 +112,6 @@ export default function Layout() {
                                 {/* Menú Desplegable */}
                                 {menuOpen && (
                                     <>
-                                        {/* Overlay para cerrar al hacer clic fuera */}
                                         <div
                                             className="position-fixed top-0 start-0 w-100 h-100"
                                             style={{ zIndex: 998 }}
@@ -152,7 +140,6 @@ export default function Layout() {
                 </div>
             </nav>
 
-            {/* Contenido de las páginas */}
             <main className="container mt-5 pb-5">
                 <Outlet />
             </main>

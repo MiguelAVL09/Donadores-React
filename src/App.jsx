@@ -1,13 +1,11 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
-// Importación de Páginas
 import Login from './pages/Login';
 import Registro from './pages/Registro';
 import Aviso from './pages/Aviso';
 import Cuestionario from './pages/Cuestionario';
 import HistorialDonaciones from './pages/HistorialDonaciones';
 
-// Importación de Componentes del Donador (con Sidebar)
 import Layout from './components/Layout';
 import Dashboard from './pages/Dashboard';
 import Perfil from './pages/Perfil';
@@ -17,7 +15,6 @@ import ListaSolicitudes from './pages/ListaSolicitudes';
 import Mapa from './pages/Mapa';
 import Chat from './pages/Chat';
 
-// Dashboards Especiales
 import AdminDashboard from './pages/AdminDashboard';
 import DoctorDashboard from './pages/DoctorDashboard';
 

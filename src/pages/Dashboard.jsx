@@ -13,7 +13,6 @@ export default function Dashboard() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        // 1. Cargar usuario de LocalStorage
         const storedUser = localStorage.getItem('currentUser');
         if (!storedUser) {
             navigate('/');
@@ -21,20 +20,16 @@ export default function Dashboard() {
         }
         setUser(JSON.parse(storedUser));
 
-        // 2. Cargar estadísticas (Con protección contra fallos)
         const fetchStats = async () => {
             try {
-                // Seleccionamos solo la columna sangre para no traer datos pesados
                 const { data: users, error } = await DB.supabase
                     .from('users')
                     .select('sangre');
 
                 if (error) throw error;
 
-                // Inicializamos contadores
                 const conteo = { "O+": 0, "O-": 0, "A+": 0, "A-": 0, "B+": 0, "B-": 0, "AB+": 0, "AB-": 0 };
 
-                // Protección: Usamos (users || []) para evitar crash si es null
                 (users || []).forEach(u => {
                     if (u.sangre && conteo[u.sangre] !== undefined) {
                         conteo[u.sangre]++;
@@ -68,7 +63,6 @@ export default function Dashboard() {
                 <span className="h5 text-muted">Hola, {user.nombre ? user.nombre.split(' ')[0] : 'Héroe'} 👋</span>
             </div>
 
-            {/* ALERTA DE CITA ACTIVA */}
             {user.citaActiva && (
                 <div className="alert alert-primary border-0 shadow-sm d-flex align-items-center mb-4 p-4 rounded-4 text-white" style={{ background: 'linear-gradient(45deg, #0d6efd, #0dcaf0)' }}>
                     <span className="fs-1 me-4">🚑</span>
@@ -81,7 +75,6 @@ export default function Dashboard() {
             )}
 
             <div className="row mb-4">
-                {/* Tarjeta Donar */}
                 <div className="col-md-4 mb-3">
                     <div className="card h-100 shadow-sm border-0">
                         <div className="card-body text-center p-4">
@@ -93,7 +86,6 @@ export default function Dashboard() {
                     </div>
                 </div>
 
-                {/* Tarjeta Mapa */}
                 <div className="col-md-4 mb-3">
                     <div className="card h-100 shadow-sm border-0">
                         <div className="card-body text-center p-4">
@@ -105,7 +97,6 @@ export default function Dashboard() {
                     </div>
                 </div>
 
-                {/* Gráfica */}
                 <div className="col-md-4 mb-3">
                     <div className="card h-100 shadow-sm border-0 p-3">
                         <h6 className="fw-bold text-center text-secondary">Comunidad de Donadores</h6>

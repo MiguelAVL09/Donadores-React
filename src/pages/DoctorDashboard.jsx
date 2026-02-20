@@ -8,7 +8,6 @@ export default function DoctorDashboard() {
 
     const cargarPacientes = async () => {
         const users = await DB.getAllUsers();
-        // Filtramos usuarios que tienen cita activa hoy
         setPacientes(users.filter(u => u.rol === 'donador' && u.citaActiva));
     };
 
@@ -18,25 +17,19 @@ export default function DoctorDashboard() {
         if (!window.confirm(`¿Confirmar extracción de sangre a ${paciente.nombre}?`)) return;
 
         try {
-            // 1. Obtener datos de la solicitud vinculada a la cita
-            const solicitudId = paciente.citaActiva.solicitudId; // (Si guardaste esto en la app)
-            // Si en la app no guardaste solicitudId, tendrás que buscar por nombre de hospital o paciente.
-            // Asumiremos que el objeto citaActiva trae { solicitudId: ... } como lo pusimos en el último código móvil.
+            const solicitudId = paciente.citaActiva.solicitudId;
 
             if (solicitudId) {
-                // A. Traer la solicitud actual
                 const { data: solicitud } = await DB.supabase.from('solicitudes').select('*').eq('id', solicitudId).single();
 
                 if (solicitud) {
                     const nuevasUnidades = solicitud.unidades_necesarias - 1;
                     const nuevoEstatus = nuevasUnidades <= 0 ? 'completada' : 'activa';
 
-                    // B. Actualizar tabla solicitudes
                     await DB.supabase.from('solicitudes')
                         .update({ unidades_necesarias: nuevasUnidades, estatus: nuevoEstatus })
                         .eq('id', solicitudId);
 
-                    // C. Notificar al dueño si se completó (Lógica espejo de la App)
                     if (nuevoEstatus === 'completada') {
                         const { data: solicitante } = await DB.supabase
                             .from('users')
@@ -45,16 +38,12 @@ export default function DoctorDashboard() {
                             .single();
 
                         if (solicitante?.push_token) {
-                            // Aquí llamarías a tu función de enviarNotificacion si estuvieras en Node/React Native.
-                            // En web pura, podrías insertar en una tabla de 'notificaciones_pendientes' si tienes un backend escuchando,
-                            // o simplemente dejar que la lógica móvil maneje esto. 
                             console.log("Meta completada. Notificar a: " + solicitud.creado_por_curp);
                         }
                     }
                 }
             }
 
-            // 2. Liberar al donador
             const updatedPaciente = {
                 ...paciente,
                 puntos: (paciente.puntos || 0) + 100, // Gamificación

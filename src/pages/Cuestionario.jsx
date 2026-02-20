@@ -8,17 +8,14 @@ export default function Cuestionario() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        // Lógica simple: Si contesta "Sí" a enfermedades (p3), rechazar.
         if (answers.p3 === 'Si') {
             alert("⚠️ Por seguridad médica, no puedes donar en este momento. Consulta a un especialista.");
             return;
         }
 
-        // Aprobar usuario
         const user = JSON.parse(sessionStorage.getItem('currentUser'));
         await DB.supabase.from('users').update({ cuestionario: true }).eq('curp', user.curp);
 
-        // Actualizar sesión local
         const updatedUser = { ...user, cuestionario: true };
         sessionStorage.setItem('currentUser', JSON.stringify(updatedUser));
 

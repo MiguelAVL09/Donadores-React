@@ -39,7 +39,6 @@ export default function Chat() {
                 addBotMsg("¡Perfecto! Estoy reservando tu lugar en el sistema...");
 
                 try {
-                    // 1. Verificar y descontar unidad en la BD
                     const { data: solicitud } = await DB.supabase.from('solicitudes').select('*').eq('id', reqId).single();
 
                     if (solicitud && solicitud.unidades_necesarias > 0) {
@@ -50,7 +49,6 @@ export default function Chat() {
                             .update({ unidades_necesarias: nuevasUnidades, estatus: nuevoEstatus })
                             .eq('id', reqId);
 
-                        // 2. Guardar cita en el usuario
                         const nuevaCita = {
                             hospital: hospital,
                             fecha: new Date().toLocaleDateString(),
@@ -64,7 +62,7 @@ export default function Chat() {
 
                         addBotMsg(`✅ <b>¡Confirmado!</b><br>Te esperamos en ${hospital}.<br>Menciona que vas a donar para: ${pacienteNombre}.`);
                         addBotMsg("¡Eres un héroe! Nos vemos.");
-                        setPaso(99); // Fin
+                        setPaso(99);
                     } else {
                         addBotMsg("❌ Lo siento, parece que esta solicitud ya fue cubierta por otro héroe hace un momento.");
                         setPaso(99);
